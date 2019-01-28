@@ -1,6 +1,9 @@
 from PIL import Image, ImageDraw
 from colormap import rgb2hex
 from collections import defaultdict
+import math
+import uuid
+
 
 hexList = []
 
@@ -14,7 +17,18 @@ def getColours(width, height, im):
         for y in range(height):
             r, g, b = im.getpixel((x, y))
             # Convert RGB to Hex
-            hexColor = rgb2hex(r, g, b)
+            red = int(math.ceil(r / 40.0)) * 40
+            green = int(math.ceil(g / 40.0)) * 40
+            blue = int(math.ceil(b / 40.0)) * 40
+
+            if red > 255:
+                red = 255
+            if green > 255:
+                green = 255
+            if blue > 255:
+                blue = 255
+
+            hexColor = rgb2hex(red, green, blue)
             # Append Hex Colour to List
             hexList.append(hexColor)
             if hexColor in my_dict:
@@ -34,7 +48,7 @@ def findCommonColours(colours_dict, im):
     current_count = 0
     my_dict_sorted_keys = sorted(colours_dict, key=colours_dict.get, reverse=True)
     for r in my_dict_sorted_keys:
-        if colours_dict[r] > 2 and current_count < 9:
+        if colours_dict[r] > 2 and current_count < 10:
             # print(r, my_dict[r])
             common_colours.append(r)
             current_count += 1
@@ -46,7 +60,7 @@ def outputPalette(im, colours):
     width, height = im.size
 
     # Add 210 Pixels to Height for 200px high rects and a 10px gap
-    img = Image.new('RGBA', (width, height + 210), color='white')
+    img = Image.new('RGBA', (width, height + 215), color='white')
 
     # Get Width of Rects
     rect_width = width / 10
@@ -59,17 +73,24 @@ def outputPalette(im, colours):
 
     img.paste(im, (0, 0))
 
-    print(colours)
+    # work out the gap between each rect
+    # image_width / num_boxes + 1
+    # This gives us the center point to place each rect
 
     for colour in colours:
         print(colour)
-        draw.rectangle([(current_x, 586), (rect_width + current_x, 786)], fill=colour)
-        current_x += 200
+        # Draw the Coloured Rectangle
+        # [(x1,y1),(x2,y2)]
+        draw.rectangle([(current_x, height), (current_x + rect_width, height + 215)], fill=colour)
+        # print(gap - 50, 586, gap + 50, 786)
+        # draw.point((current_x, 586), fill=colour)
+        current_x += rect_width
 
-    img.save('pil_red.png')
+    unique_filename = str(uuid.uuid4())
+    img.save(unique_filename + '.png')
 
 def main():
-    im = Image.open("wallpaper.jpg")
+    im = Image.open("wallpaper1.jpg")
 
     width, height = im.size
     getColours(width, height, im)
