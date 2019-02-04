@@ -90,7 +90,7 @@ def outputPalette(im, colours):
     img.save(unique_filename + '.png')
 
 def main():
-    im = Image.open("wallpaper1.jpg")
+    im = Image.open("ssssss.png")
 
     width, height = im.size
     getColours(width, height, im)
