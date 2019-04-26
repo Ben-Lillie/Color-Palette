@@ -4,9 +4,7 @@ from collections import defaultdict
 import math
 import uuid
 
-
 hexList = []
-
 
 def getColours(width, height, im):
     # Pixel Count
@@ -90,7 +88,7 @@ def outputPalette(im, colours):
     img.save(unique_filename + '.png')
 
 def main():
-    im = Image.open("images/wallpaper1.jpg")
+    im = Image.open("images/wallpaper3.jpg")
 
     width, height = im.size
     getColours(width, height, im)
