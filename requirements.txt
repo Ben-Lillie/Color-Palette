@@ -1,3 +1,4 @@
 Pillow
 colormap
 easydev
+scikit-image
